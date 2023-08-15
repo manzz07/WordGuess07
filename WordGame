@@ -1,0 +1,108 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
+
+class WordGame {
+
+    static public String ReadString() {
+        try {
+            InputStreamReader input = new InputStreamReader(System.in);
+            BufferedReader reader = new BufferedReader(input);
+            return reader.readLine();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Welcome to Guess a Word\n");
+
+        List<String> wordsList = Arrays.asList("apple", "book cook", "dog dag", "cat");
+        wordsList.size();
+
+        int count = wordsList.size() - 1;
+        System.out.println("count: " + count);
+        if (count < 0) {
+            System.out.println("No words found in the file");
+            return;
+        }
+
+        int x = (int) (Math.random() * 100);
+        System.out.println(x);
+
+        int guessX = (x % count);
+        System.out.println("guess" + guessX + " - Count ---" + count);
+
+        String secretWord = wordsList.get(guessX);// words[guessX];
+        System.out.println(secretWord);
+        int numChars = secretWord.length();
+
+        System.out.print("Your secret word is: ");
+        for (int i = 0; i < numChars; i++)
+            System.out.print("*");
+        System.out.println();
+
+        boolean bGuessedCorrectly = true;
+        System.out.println("Guess now  (To stop the program, enter #) : ");
+        String choicelist = "";
+
+        while (true) {
+            bGuessedCorrectly = true;
+            String choice = ReadString();
+
+            if (choice.compareTo("#") == 0) {
+                bGuessedCorrectly = false;
+                break;
+            }
+
+            choicelist += choice;
+            if (choicelist.length() > 5)
+                choicelist = choicelist.substring(0, 4);
+
+            boolean bResult = false;
+            String dispstr = "";
+            for (int i = 0; i < numChars; i++) {
+                boolean bCorrect = false;
+                for (int j = 0; j < choicelist.length(); j++) {
+                    if (choice.indexOf(secretWord.charAt(i)) >= 0)
+                        bResult = true;
+                    if (secretWord.charAt(i) == choicelist.charAt(j)) {
+                        dispstr += secretWord.charAt(i);
+                        bCorrect = true;
+                        break;
+                    }
+                }
+                if (bCorrect == false) {
+                    dispstr += "*";
+                    bGuessedCorrectly = false;
+                }
+            }
+            if (bResult == true) {
+                System.out.format("Correct: %s", dispstr);
+            } else {
+                System.out.format("Wrong: %s", dispstr);
+            }
+
+            if (bGuessedCorrectly == true)
+                break;
+            System.out.println();
+            System.out.print("Letter Guesses List: ");
+            for (int i = 0; i < choicelist.length(); i++)
+                System.out.format("%c ", choicelist.charAt(i));
+            System.out.println();
+
+            if (choicelist.length() >= 5) {
+                System.out.print("You have reached maximum amount of guesses.");
+                bGuessedCorrectly = false;
+                break;
+            }
+        }
+
+        if (bGuessedCorrectly == false)
+            System.out.println("\nUnfortunately you did not guess it correctly. The secret word is: " + secretWord);
+        else
+            System.out.println("\nCongrats! You have guessed it correctly");
+    }
+}
